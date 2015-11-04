@@ -1,3 +1,4 @@
+package com.cachemap;
 /**
  * A generic cache. Works just like a Map, except that entries automatically "disappear"
  * when they expire. <p>

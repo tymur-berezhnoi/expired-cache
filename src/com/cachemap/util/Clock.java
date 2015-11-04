@@ -1,3 +1,4 @@
+package com.cachemap.util;
 
 /**
  * Provides a way to override the system time.
@@ -21,9 +22,11 @@ public class Clock {
 	/**
 	 * Sets the time. This will cause getTime() to return the given time
 	 * instead of the system time.
+	 * @throws InterruptedException 
 	 */
-	public static void setTime(long time) {
+	public static void setTime(long time) throws InterruptedException {
 		Clock.time = time;
+		Thread.sleep(time);
 	}
 	
 	/**
