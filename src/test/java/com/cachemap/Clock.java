@@ -1,4 +1,4 @@
-package com.cachemap.util;
+package com.cachemap;
 
 /**
  * Provides a way to override the system time.

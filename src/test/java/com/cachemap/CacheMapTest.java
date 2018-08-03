@@ -1,55 +1,49 @@
 package com.cachemap;
-import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.cachemap.util.Clock;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * JUnit test case for a CacheMap implementation.
- * <p/>
- * Feel free to add more methods.
- */
-public class CacheMapTest {
+class CacheMapTest {
 
 	private CacheMap<Integer, String> cache;
-	final static long TIME_TO_LIVE = 1000;
+	private final static long TIME_TO_LIVE = 10;
 
-	@Before
-	public void setUp() throws Exception {
-		cache = new ExpireCacheMap<Integer, String>();
+	@BeforeEach
+	void setUp() {
+		cache = new ExpireCacheMap<>();
 	}
 	
 	@Test
-	public void testExpiry() throws InterruptedException {
+	void testExpiry() throws InterruptedException {
 		cache.put(1, "apple");
 		
 		assertEquals("apple", cache.get(1));
 		assertFalse(cache.isEmpty());
 		
 		cache.setTimeToLive(TIME_TO_LIVE);
-		Clock.setTime(3000);
+		Clock.setTime(50);
 		
 		assertNull(cache.get(1));
 		assertTrue(cache.isEmpty());
 	}
 
 	@Test
-	public void testSize() throws Exception {
+	void testSize() throws Exception {
 		assertEquals(0, cache.size());
 		
 		cache.put(1, "apple");
 		assertEquals(1, cache.size());
 		
 		cache.setTimeToLive(TIME_TO_LIVE);
-		Clock.setTime(3000);
+		Clock.setTime(50);
 		
 		assertEquals(0, cache.size());
 	}
 
 	@Test
-	public void testPartialExpiry() throws Exception {
+	void testPartialExpiry() throws Exception {
 		// Add an apple, it will expire at 2000
 		cache.put(1, "apple");
 		cache.setTimeToLive(2000);
@@ -72,7 +66,7 @@ public class CacheMapTest {
 	}
 	
 	@Test
-	public void testPutReturnValue() throws InterruptedException {
+	void testPutReturnValue() throws InterruptedException {
 		cache.put(1, "apple");
 		
 		assertNotNull(cache.put(1, "banana"));
@@ -82,23 +76,23 @@ public class CacheMapTest {
 		cache.setTimeToLive(TIME_TO_LIVE);
 		Clock.setTime(3000);
 		assertNull(cache.get(1));
-//		assertNull(cache.put(1, "mango")); // assertNull(cache.put(1, "mango")); - it always returns "mango" so i ned a little bit rewrite it
+		assertNull(cache.put(1, "mango")); // assertNull(cache.put(1, "mango")); - it always returns "mango" so i ned a little bit rewrite it
 	}
 
 	@Test
-	public void testRemove() throws Exception {
-		assertNull(cache.remove(new Integer(1)));
+	void testRemove() {
+		assertNull(cache.remove(1));
 
-		cache.put(new Integer(1), "apple");
+		cache.put(1, "apple");
 
-		assertEquals("apple", cache.remove(new Integer(1)));
+		assertEquals("apple", cache.remove(1));
 
-		assertNull(cache.get(new Integer(1)));
+		assertNull(cache.get(1));
 		assertEquals(0, cache.size());
 	}
 
 	@Test
-	public void testContainsKeyAndContainsValue() throws InterruptedException {
+	void testContainsKeyAndContainsValue() throws InterruptedException {
 		assertFalse(cache.containsKey(1));
 		assertFalse(cache.containsValue("apple"));
 		assertFalse(cache.containsKey(2));

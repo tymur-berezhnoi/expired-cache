@@ -6,11 +6,10 @@ import java.util.TimerTask;
 /**
  * @author Timur Berezhnoi
  */
-public class ExpireCacheMap<KeyType, ValueType> implements
-		CacheMap<KeyType, ValueType> {
+public class ExpireCacheMap<KeyType, ValueType> implements CacheMap<KeyType, ValueType> {
 
 	private Entry<KeyType, ValueType>[] table;
-	static final int DEFAULT_CAPACITY = 10;
+	private static final int DEFAULT_CAPACITY = 10;
 	
 	private int size;
 	private long timeToLive;
@@ -32,7 +31,6 @@ public class ExpireCacheMap<KeyType, ValueType> implements
 		table = new Entry[DEFAULT_CAPACITY];
 	}
 
-	@SuppressWarnings("unchecked")
 	public ExpireCacheMap(int capacity) {
 		table = new Entry[capacity];
 	}
@@ -63,11 +61,11 @@ public class ExpireCacheMap<KeyType, ValueType> implements
 						return value;
 					}
 				}
-				entry.next = new Entry<KeyType, ValueType>(key, value);
+				entry.next = new Entry<>(key, value);
 				size++;
 			}
 		} else {
-			table[hash] = new Entry<KeyType, ValueType>(key, value);
+			table[hash] = new Entry<>(key, value);
 			size++;
 		}
 		return value;
@@ -167,7 +165,7 @@ public class ExpireCacheMap<KeyType, ValueType> implements
 		return Math.abs(key == null ? 0 : key.hashCode()) % DEFAULT_CAPACITY;
 	}
 
-	private final void expireProcessor(long timeToLive) {
+	private void expireProcessor(long timeToLive) {
 		Timer t = new Timer();
 		t.schedule(new TimerTask() {
 			@Override
